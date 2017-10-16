@@ -28,9 +28,9 @@ export default Ember.Object.extend({
 
   subscribe(observedChannels) {
     const { socket, eventHandler } = getProperties(this, 'socket', 'eventHandler');
-    observedChannels.forEach(eventName => socket.on(eventName, eventHandler));
+    observedChannels.forEach(eventName => socket.on(eventName, function(data){eventHandler(eventName,data)}));
   },
-
+  
   emit(eventName, eventData) {
     const socket = get(this, 'socket');
     socket.emit(eventName, eventData);
