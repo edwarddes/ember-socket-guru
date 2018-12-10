@@ -1,15 +1,13 @@
-import Ember from 'ember';
+import { assert } from '@ember/debug';
+import EmberObject, {
+  getWithDefault,
+  setProperties,
+  getProperties,
+  get
+} from '@ember/object';
 import { omit } from 'lodash';
 
-const {
-  get,
-  assert,
-  getProperties,
-  setProperties,
-  getWithDefault,
-} = Ember;
-
-export default Ember.Object.extend({
+export default EmberObject.extend({
   ioService: io,
   hasNoChannels: true,
   requiredConfigurationOptions: ['host'],

@@ -1,6 +1,5 @@
-import Ember from 'ember';
-
-const { isArray, typeOf } = Ember;
+import { isArray } from '@ember/array';
+import { typeOf } from '@ember/utils';
 
 const verifyArrayStructure = (eventsArray) => {
   if (!eventsArray.length) return false;

@@ -1,6 +1,6 @@
-import Ember from 'ember';
-
-const { Controller, get, set, computed, run } = Ember;
+import Controller from '@ember/controller';
+import { computed, set, get } from '@ember/object';
+import { run } from '@ember/runloop';
 
 /* eslint-disable netguru-ember/alias-model-in-controller */
 export default Controller.extend({

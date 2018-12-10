@@ -1,3 +1,4 @@
+import { get } from '@ember/object';
 import Ember from 'ember';
 import ActionCableClient from 'ember-socket-guru/socket-clients/action-cable';
 import { module, test } from 'qunit';
@@ -18,7 +19,9 @@ module('Unit | Socket Clients | Action Cable', {
   },
 });
 
-const { get, K } = Ember;
+const {
+  K
+} = Ember;
 const testConfig = {
   socketAddress: 'ws://0.0.0.0:28080',
 };

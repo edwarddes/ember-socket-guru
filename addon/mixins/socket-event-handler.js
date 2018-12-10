@@ -1,13 +1,9 @@
-import Ember from 'ember';
-
-const {
-  Mixin,
-  get,
-  inject: { service },
-} = Ember;
+import { get } from '@ember/object';
+import Mixin from '@ember/object/mixin';
+import { inject } from '@ember/service';
 
 export default Mixin.create({
-  socketGuru: service(),
+  socketGuru: inject(),
 
   init() {
     this._super(...arguments);

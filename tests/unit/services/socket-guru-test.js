@@ -1,9 +1,8 @@
+import { get } from '@ember/object';
+import { run } from '@ember/runloop';
 import SocketGuruService from 'ember-socket-guru/services/socket-guru';
 import { module, test } from 'qunit';
 import sinon from 'sinon';
-import Ember from 'ember';
-
-const { get, run } = Ember;
 
 module('Unit | Service | socket guru');
 

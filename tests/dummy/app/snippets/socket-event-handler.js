@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 import SocketEventHandler from 'ember-socket-guru/mixins/socket-event-handler';
-
-const { Route } = Ember;
 
 export default Route.extend(SocketEventHandler, {
   socketActions: {

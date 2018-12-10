@@ -1,11 +1,14 @@
-import Ember from 'ember';
+import EmberObject, {
+  setProperties,
+  set,
+  get
+} from '@ember/object';
+import $ from 'jquery';
+import { run } from '@ember/runloop';
+import { warn, assert } from '@ember/debug';
 import { omit } from 'lodash';
 
-const {
-  get, set, setProperties, $, run, assert, warn,
-} = Ember;
-
-export default Ember.Object.extend({
+export default EmberObject.extend({
   pusherService: Pusher,
   socketId: null,
   socket: null,

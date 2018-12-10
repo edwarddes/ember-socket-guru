@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
+import { run } from '@ember/runloop';
 import SocketEventHandlerMixin from 'ember-socket-guru/mixins/socket-event-handler';
 import { module, test } from 'qunit';
 import sinon from 'sinon';
 
 module('Unit | Mixin | socket event handler');
 
-const { run } = Ember;
 const socketGuruServiceStub = (offSpy = function() {}) => ({
   on() {},
   off: offSpy,
@@ -13,7 +13,7 @@ const socketGuruServiceStub = (offSpy = function() {}) => ({
 
 test('_handleEvent method', function(assert) {
   const funcSpy = sinon.spy();
-  const SocketEventHandlerObject = Ember.Object.extend(SocketEventHandlerMixin, {
+  const SocketEventHandlerObject = EmberObject.extend(SocketEventHandlerMixin, {
     socketGuru: socketGuruServiceStub(),
     socketActions: {
       event1: funcSpy,
@@ -28,7 +28,7 @@ test('_handleEvent method', function(assert) {
 
 test('it detaches events when object destroyed', function(assert) {
   const offSpy = sinon.spy();
-  const SocketEventHandlerObject = Ember.Object.extend(SocketEventHandlerMixin, {
+  const SocketEventHandlerObject = EmberObject.extend(SocketEventHandlerMixin, {
     socketGuru: socketGuruServiceStub(offSpy),
   });
   const subject = SocketEventHandlerObject.create();
@@ -42,7 +42,7 @@ test('it detaches events when object destroyed', function(assert) {
 
 test('it doesnt blow up when no actions and no eventHandler specified', function(assert) {
   const offSpy = sinon.spy();
-  const SocketEventHandlerObject = Ember.Object.extend(SocketEventHandlerMixin, {
+  const SocketEventHandlerObject = EmberObject.extend(SocketEventHandlerMixin, {
     socketGuru: socketGuruServiceStub(offSpy),
   });
   const subject = SocketEventHandlerObject.create();

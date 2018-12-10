@@ -1,11 +1,13 @@
+import EmberObject, {
+  setProperties,
+  set,
+  get
+} from '@ember/object';
+import { run } from '@ember/runloop';
+import { warn, assert } from '@ember/debug';
 import { Socket } from 'phoenix';
-import Ember from 'ember';
 
-const {
-  get, set, setProperties, assert, run, warn,
-} = Ember;
-
-export default Ember.Object.extend({
+export default EmberObject.extend({
   Socket,
   joinedChannels: {},
 

@@ -1,9 +1,7 @@
+import { get } from '@ember/object';
 import SocketIOClient from 'ember-socket-guru/socket-clients/socketio';
 import { module, test } from 'qunit';
 import sinon from 'sinon';
-import Ember from 'ember';
-
-const { get } = Ember;
 
 module('Unit | Socket Clients | socketio');
 

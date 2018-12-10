@@ -1,11 +1,10 @@
+import { get } from '@ember/object';
 import PhoenixClient from 'ember-socket-guru/socket-clients/phoenix';
 import { module, test } from 'qunit';
 import sinon from 'sinon';
-import Ember from 'ember';
 
 module('Unit | Socket Clients | Phoenix');
 
-const { get } = Ember;
 const getPhoenixStub = (
   connect = () => {},
   disconnect = () => {},

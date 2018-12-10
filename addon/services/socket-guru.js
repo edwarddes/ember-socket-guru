@@ -1,4 +1,13 @@
-import Ember from 'ember';
+import { assert } from '@ember/debug';
+import Service from '@ember/service';
+import { isArray } from '@ember/array';
+import { runInDebug } from '@ember/debug';
+import { getOwner } from '@ember/application';
+import { get } from '@ember/object';
+import { getProperties } from '@ember/object';
+import { set } from '@ember/object';
+import Evented from '@ember/object/evented';
+
 import socketClientLookup from 'ember-socket-guru/util/socket-client-lookup';
 import {
   verifyArrayStructure,
@@ -6,18 +15,6 @@ import {
 } from 'ember-socket-guru/util/structure-checker';
 import { channelsDiff, removeChannel } from 'ember-socket-guru/util/channels-diff';
 import { eventsDiff, removeEvent } from 'ember-socket-guru/util/events-diff';
-
-const {
-  assert,
-  Service,
-  get,
-  getProperties,
-  set,
-  getOwner,
-  Evented,
-  isArray,
-  runInDebug,
-} = Ember;
 
 export default Service.extend(Evented, {
   socketClientLookup,

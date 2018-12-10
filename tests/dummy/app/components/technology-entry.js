@@ -1,6 +1,5 @@
-import Ember from 'ember';
-
-const { Component, get, computed } = Ember;
+import Component from '@ember/component';
+import { computed, get } from '@ember/object';
 
 export default Component.extend({
   isSelected: computed('selectedTechnology', function() {

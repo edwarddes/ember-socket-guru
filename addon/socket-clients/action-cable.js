@@ -1,8 +1,12 @@
-import Ember from 'ember';
+import { assert } from '@ember/debug';
+import EmberObject, {
+  setProperties,
+  getProperties,
+  get,
+  set
+} from '@ember/object';
 
-const { set, get, getProperties, assert, setProperties } = Ember;
-
-export default Ember.Object.extend({
+export default EmberObject.extend({
   actionCableService: ActionCable,
   actionCable: null,
   eventHandler: null,
