@@ -10,7 +10,7 @@ import { omit } from 'lodash';
 export default EmberObject.extend({
   ioService: io,
   hasNoChannels: true,
-  requiredConfigurationOptions: ['host'],
+  requiredConfigurationOptions: ['host','namespace'],
   // There's no concept of unsubscribing channels in socket.io
   unsubscribeChannels() {},
 
@@ -18,7 +18,9 @@ export default EmberObject.extend({
     this._checkConfig(config);
     const socket = get(this, 'ioService')(
       get(config, 'host'),
-      omit(config, get(this, 'requiredConfigurationOptions'))
+	  {
+		path:get(config,'namespace')+'/socket.io'
+	  }
     );
     setProperties(this, { socket, eventHandler });
     socket.connect();
@@ -42,6 +44,10 @@ export default EmberObject.extend({
     assert(
       '[ember-sockets-guru] You need to provide host in the socket-guru service',
       !!get(config, 'host')
+    );
+    assert(
+      '[ember-sockets-guru] You need to provide namespace in the socket-guru service',
+      !!get(config, 'namespace')
     );
     assert(
       `
