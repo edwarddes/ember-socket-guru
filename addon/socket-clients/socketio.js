@@ -47,7 +47,7 @@ export default EmberObject.extend({
     );
     assert(
       '[ember-sockets-guru] You need to provide namespace in the socket-guru service',
-      !!get(config, 'namespace')
+      get(config, 'namespace')!=undefined
     );
     assert(
       `
