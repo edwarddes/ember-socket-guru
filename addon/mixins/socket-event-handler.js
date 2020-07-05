@@ -7,12 +7,12 @@ export default Mixin.create({
 
   init() {
     this._super(...arguments);
-    get(this, 'socketGuru').on('newEvent', this, this._handleEvent);
+    this.socketGuru.on('newEvent', this, this._handleEvent);
   },
 
   willDestroy() {
     this._super(...arguments);
-    get(this, 'socketGuru').off('newEvent', this, this._handleEvent);
+    this.socketGuru.off('newEvent', this, this._handleEvent);
   },
 
   _handleEvent(event, data) {
@@ -24,7 +24,7 @@ export default Mixin.create({
   },
 
   _getEventMethod(methodName) {
-    const socketActions = get(this, 'socketActions') || [];
+    const socketActions = this.socketActions || [];
     const method = Object.keys(socketActions)
       .find((key) => key === methodName);
     if (method) {

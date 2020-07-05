@@ -6,10 +6,10 @@ export default Component.extend({
     this._super(...arguments);
 
     set(this, 'isSelected',
-      get(this, 'route') === get(this, 'label').toLowerCase());
+      this.route === this.label.toLowerCase());
 
     set(this, 'linkClass',
-      get(this, 'isSelected') ?
+      this.isSelected ?
         'links-pane__link links-pane__link--selected' :
         'links-pane__link'
     );

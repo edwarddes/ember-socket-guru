@@ -13,7 +13,7 @@ export default EmberObject.extend({
 
   setup(config, eventHandler) {
     this._checkConfig(config);
-    const SocketService = get(this, 'Socket');
+    const SocketService = this.Socket;
     const socket = new SocketService(get(config, 'socketAddress'));
     socket.connect();
     setProperties(this, { socket, eventHandler });
@@ -21,8 +21,8 @@ export default EmberObject.extend({
 
   subscribe(observedChannels) {
     Object.keys(observedChannels).forEach((channelName) => {
-      const channel = get(this, 'socket').channel(channelName);
-      const joinedChannels = get(this, 'joinedChannels');
+      const channel = this.socket.channel(channelName);
+      const joinedChannels = this.joinedChannels;
       channel.join();
       set(this, 'joinedChannels', Object.assign({}, joinedChannels, {
         [channelName]: channel,
@@ -49,7 +49,7 @@ export default EmberObject.extend({
   },
 
   disconnect() {
-    get(this, 'socket').disconnect();
+    this.socket.disconnect();
   },
 
   _checkConfig(config) {
@@ -62,7 +62,7 @@ export default EmberObject.extend({
   _attachEventsToChannel(channel, channelName, events) {
     events.forEach((event) => {
       channel.on(event, (data) => {
-        run(() => get(this, 'eventHandler')(event, data));
+        run(() => this.eventHandler(event, data));
       });
     });
   },

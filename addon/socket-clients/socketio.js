@@ -16,7 +16,7 @@ export default EmberObject.extend({
 
   setup(config, eventHandler) {
     this._checkConfig(config);
-    const socket = get(this, 'ioService')(
+    const socket = this.ioService(
       get(config, 'host'),
 	  {
 		path:get(config,'namespace')+'/socket.io'
@@ -32,12 +32,12 @@ export default EmberObject.extend({
   },
   
   emit(eventName, eventData) {
-    const socket = get(this, 'socket');
+    const socket = this.socket;
     socket.emit(eventName, eventData);
   },
 
   disconnect() {
-    get(this, 'socket').disconnect();
+    this.socket.disconnect();
   },
 
   _checkConfig(config) {
@@ -54,7 +54,7 @@ export default EmberObject.extend({
       [ember-sockets-guru] You need to make sure the socket.io client library
       is available on the global window object
       `,
-      !!get(this, 'ioService')
+      !!this.ioService
     );
   },
 });

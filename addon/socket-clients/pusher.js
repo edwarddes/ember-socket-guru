@@ -17,24 +17,24 @@ export default EmberObject.extend({
   joinedChannels: {},
 
   setup(config, eventHandler) {
-    const PusherService = get(this, 'pusherService');
+    const PusherService = this.pusherService;
     this._checkConfig(config);
     setProperties(this, {
       eventHandler,
       socket: new PusherService(
         get(config, 'pusherKey'),
-        omit(config, get(this, 'requiredConfigurationOptions'))
+        omit(config, this.requiredConfigurationOptions)
       ),
     });
 
-    get(this, 'socket').connection
+    this.socket.connection
       .bind('connected', () => this._handleConnected());
   },
 
   subscribe(observedChannels) {
     Object.keys(observedChannels).forEach((channelName) => {
-      const channel = get(this, 'socket').subscribe(channelName);
-      const joinedChannels = get(this, 'joinedChannels');
+      const channel = this.socket.subscribe(channelName);
+      const joinedChannels = this.joinedChannels;
       set(this, 'joinedChannels', Object.assign({}, joinedChannels, {
         [channelName]: channel,
       }));
@@ -44,7 +44,7 @@ export default EmberObject.extend({
 
   unsubscribeChannels(observedChannels) {
     Object.keys(observedChannels)
-      .forEach(channel => get(this, 'socket').unsubscribe(channel));
+      .forEach(channel => this.socket.unsubscribe(channel));
   },
 
   emit(channelName, eventName, eventData) {
@@ -61,12 +61,12 @@ export default EmberObject.extend({
 
   disconnect() {
     if (get(this, 'socket.disconnect')) {
-      get(this, 'socket').disconnect();
+      this.socket.disconnect();
     }
   },
 
   _handleConnected() {
-    const socketId = get(this, 'socket').connection.socket_id;
+    const socketId = this.socket.connection.socket_id;
     set(this, 'socketId', socketId);
     $.ajaxPrefilter((options, originalOptions, xhr) => {
       return xhr.setRequestHeader('X-Pusher-Socket', socketId);
@@ -76,7 +76,7 @@ export default EmberObject.extend({
   _attachEventsToChannel(channel, channelName, events) {
     events.forEach((event) => {
       channel.bind(event, (data) => {
-        run(() => get(this, 'eventHandler')(event, data));
+        run(() => this.eventHandler(event, data));
       });
     });
   },

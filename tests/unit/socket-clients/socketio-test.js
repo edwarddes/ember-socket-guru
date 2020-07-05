@@ -3,103 +3,103 @@ import SocketIOClient from 'ember-socket-guru/socket-clients/socketio';
 import { module, test } from 'qunit';
 import sinon from 'sinon';
 
-module('Unit | Socket Clients | socketio');
+module('Unit | Socket Clients | socketio', function() {
+  const createIoStub = (
+    connect = () => {},
+    on = () => {},
+    disconnect = () => {},
+    emit = () => {}
+  ) => {
+    return () => ({ connect, on, disconnect, emit });
+  };
 
-const createIoStub = (
-  connect = () => {},
-  on = () => {},
-  disconnect = () => {},
-  emit = () => {}
-) => {
-  return () => ({ connect, on, disconnect, emit });
-};
+  test('verifies required socket.io config options', function(assert) {
+    const client = SocketIOClient.create();
 
-test('verifies required socket.io config options', function(assert) {
-  const client = SocketIOClient.create();
-
-  assert.throws(() => {
-    client.setup({});
-  }, /need to provide host/, 'it throws when no host present');
-});
-
-test('verifies socketio client library passed in', function(assert) {
-  const client = SocketIOClient.create({
-    ioService: null,
+    assert.throws(() => {
+      client.setup({});
+    }, /need to provide host/, 'it throws when no host present');
   });
 
-  assert.throws(
-    () => client.setup({ host: 'http://locahost:1234' }),
-    /need to make sure the socket.io client library/,
-    'it throws when socketio client not installed'
-  );
-});
+  test('verifies socketio client library passed in', function(assert) {
+    const client = SocketIOClient.create({
+      ioService: null,
+    });
 
-test('setup function', function(assert) {
-  const connectSpy = sinon.spy();
-  const ioStub = sinon.spy(() => ({
-    connect: connectSpy,
-  }));
-  const eventHandlerSpy = sinon.spy();
-  const client = SocketIOClient.create({
-    ioService: ioStub,
+    assert.throws(
+      () => client.setup({ host: 'http://locahost:1234' }),
+      /need to make sure the socket.io client library/,
+      'it throws when socketio client not installed'
+    );
   });
 
-  const clientOptions = { foo: 'bar' };
+  test('setup function', function(assert) {
+    const connectSpy = sinon.spy();
+    const ioStub = sinon.spy(() => ({
+      connect: connectSpy,
+    }));
+    const eventHandlerSpy = sinon.spy();
+    const client = SocketIOClient.create({
+      ioService: ioStub,
+    });
 
-  client.setup(
-    { host: 'http://localhost:1234', ...clientOptions },
-    eventHandlerSpy
-  );
+    const clientOptions = { foo: 'bar' };
 
-  assert.ok(ioStub.calledOnce);
-  assert.equal(ioStub.firstCall.args[0], 'http://localhost:1234');
-  assert.deepEqual(ioStub.firstCall.args[1], clientOptions, 'it passes client options to socketio');
-  assert.ok(connectSpy.calledOnce);
-  assert.equal(get(client, 'eventHandler'), eventHandlerSpy);
-});
+    client.setup(
+      { host: 'http://localhost:1234', ...clientOptions },
+      eventHandlerSpy
+    );
 
-test('subscribe method', function(assert) {
-  const onSpy = sinon.spy();
-  const ioStub = createIoStub(() => {}, onSpy);
-  const client = SocketIOClient.create({
-    ioService: ioStub,
+    assert.ok(ioStub.calledOnce);
+    assert.equal(ioStub.firstCall.args[0], 'http://localhost:1234');
+    assert.deepEqual(ioStub.firstCall.args[1], clientOptions, 'it passes client options to socketio');
+    assert.ok(connectSpy.calledOnce);
+    assert.equal(get(client, 'eventHandler'), eventHandlerSpy);
   });
 
-  const handlerSpy = sinon.spy().bind(this);
+  test('subscribe method', function(assert) {
+    const onSpy = sinon.spy();
+    const ioStub = createIoStub(() => {}, onSpy);
+    const client = SocketIOClient.create({
+      ioService: ioStub,
+    });
 
-  client.setup({ host: 'foo' }, handlerSpy);
-  client.subscribe(['event1', 'event2']);
+    const handlerSpy = sinon.spy().bind(this);
 
-  const [firstCallArgs, secondCallArgs] = onSpy.args;
+    client.setup({ host: 'foo' }, handlerSpy);
+    client.subscribe(['event1', 'event2']);
 
-  assert.deepEqual(firstCallArgs, ['event1', handlerSpy]);
-  assert.deepEqual(secondCallArgs, ['event2', handlerSpy]);
-});
+    const [firstCallArgs, secondCallArgs] = onSpy.args;
 
-test('disconnect method', function(assert) {
-  const disconnectSpy = sinon.spy();
-  const client = SocketIOClient.create({
-    ioService: createIoStub(sinon.spy(), sinon.spy(), disconnectSpy),
+    assert.deepEqual(firstCallArgs, ['event1', handlerSpy]);
+    assert.deepEqual(secondCallArgs, ['event2', handlerSpy]);
   });
 
-  client.setup({ host: 'host' }, sinon.spy());
-  client.disconnect();
+  test('disconnect method', function(assert) {
+    const disconnectSpy = sinon.spy();
+    const client = SocketIOClient.create({
+      ioService: createIoStub(sinon.spy(), sinon.spy(), disconnectSpy),
+    });
 
-  assert.ok(disconnectSpy.calledOnce);
-});
+    client.setup({ host: 'host' }, sinon.spy());
+    client.disconnect();
 
-test('emit method', function(assert) {
-  const emitSpy = sinon.spy();
-  const client = SocketIOClient.create({
-    ioService: createIoStub(
-      sinon.spy(), sinon.spy(), sinon.spy(), emitSpy
-    ),
+    assert.ok(disconnectSpy.calledOnce);
   });
 
-  client.setup({ host: 'host' }, sinon.spy());
-  const args = ['fooEvent', { fooKey: 'fooValue' }];
-  client.emit(...args);
+  test('emit method', function(assert) {
+    const emitSpy = sinon.spy();
+    const client = SocketIOClient.create({
+      ioService: createIoStub(
+        sinon.spy(), sinon.spy(), sinon.spy(), emitSpy
+      ),
+    });
 
-  assert.ok(emitSpy.calledOnce, 'it calls sockets emit method');
-  assert.deepEqual(emitSpy.args[0], args, 'it passes in proper arguments');
+    client.setup({ host: 'host' }, sinon.spy());
+    const args = ['fooEvent', { fooKey: 'fooValue' }];
+    client.emit(...args);
+
+    assert.ok(emitSpy.calledOnce, 'it calls sockets emit method');
+    assert.deepEqual(emitSpy.args[0], args, 'it passes in proper arguments');
+  });
 });

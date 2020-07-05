@@ -7,12 +7,12 @@ export default Component.extend({
   }),
 
   technologyClass: computed('isSelected', function() {
-    return get(this, 'isSelected') ?
+    return this.isSelected ?
       'c-main-page__technology' :
       'c-main-page__technology c-main-page__technology--faded';
   }),
 
   click() {
-    get(this, 'onClick')(get(this, 'technology.name'));
+    this.onClick(get(this, 'technology.name'));
   },
 });

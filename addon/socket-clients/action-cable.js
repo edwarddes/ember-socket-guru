@@ -24,7 +24,7 @@ export default EmberObject.extend({
     );
 
     const socketAddress = get(config, 'socketAddress');
-    const actionCable = get(this, 'actionCableService').createConsumer(socketAddress);
+    const actionCable = this.actionCableService.createConsumer(socketAddress);
     setProperties(this, { actionCable, eventHandler, joinedChannels: {} });
   },
 
@@ -67,7 +67,7 @@ export default EmberObject.extend({
   },
 
   unsubscribeChannels(channels) {
-    const joinedChannels = get(this, 'joinedChannels');
+    const joinedChannels = this.joinedChannels;
 
     channels.forEach((channel) => {
       const selectedChannel = joinedChannels[channel];
@@ -83,6 +83,6 @@ export default EmberObject.extend({
   },
 
   disconnect() {
-    get(this, 'actionCable').disconnect();
+    this.actionCable.disconnect();
   },
 });

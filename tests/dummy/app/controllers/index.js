@@ -29,28 +29,28 @@ export default Controller.extend({
   isIncrementing: true,
 
   selectedTechnology: computed('technologies', function() {
-    return get(this, 'technologies')[1];
+    return this.technologies[1];
   }),
 
   upperTechnologies: computed('selectedTechnology', function() {
-    const selectedTechnology = get(this, 'selectedTechnology');
+    const selectedTechnology = this.selectedTechnology;
 
-    return get(this, 'technologies').filter((technology) => {
+    return this.technologies.filter((technology) => {
       return technology.position < selectedTechnology.position;
     });
   }),
 
   lowerTechnologies: computed('selectedTechnology', function() {
-    const selectedTechnology = get(this, 'selectedTechnology');
+    const selectedTechnology = this.selectedTechnology;
 
-    return get(this, 'technologies').filter((technology) => {
+    return this.technologies.filter((technology) => {
       return technology.position > selectedTechnology.position;
     });
   }),
 
   actions: {
     selectTechnology(name) {
-      const technology = get(this, 'technologies')
+      const technology = this.technologies
         .filter(item => item.name === name)[0];
 
       set(this, 'selectedTechnology', technology);
@@ -70,8 +70,8 @@ export default Controller.extend({
 
   _animateTechnologies() {
     run.later(() => {
-      const selectedTechnology = get(this, 'selectedTechnology');
-      const technologies = get(this, 'technologies');
+      const selectedTechnology = this.selectedTechnology;
+      const technologies = this.technologies;
       const position = technologies.indexOf(selectedTechnology);
 
       if (position === (technologies.length - 1)) {
@@ -80,7 +80,7 @@ export default Controller.extend({
         set(this, 'isIncrementing', true);
       }
 
-      const next = get(this, 'isIncrementing') ? position + 1 : position - 1;
+      const next = this.isIncrementing ? position + 1 : position - 1;
 
       set(this, 'selectedTechnology', technologies[next]);
       this._animateTechnologies();

@@ -62,14 +62,14 @@ export default Service.extend(Evented, {
 
   init() {
     this._super(...arguments);
-    if (get(this, 'autoConnect')) {
+    if (this.autoConnect) {
       this.setup();
     }
   },
 
   willDestroy() {
     this._super(...arguments);
-    const client = get(this, 'client');
+    const client = this.client;
     if (client) client.disconnect();
   },
 
@@ -80,18 +80,18 @@ export default Service.extend(Evented, {
    * passing in the config object
    */
   setup() {
-    const socketClient = get(this, 'socketClientLookup')(getOwner(this), get(this, 'socketClient'));
+    const socketClient = this.socketClientLookup(getOwner(this), this.socketClient);
     set(this, 'client', socketClient);
     runInDebug(() => this._checkOptions());
-    get(this, 'client').setup(
-      get(this, 'config'),
+    this.client.setup(
+      this.config,
       this._handleEvent.bind(this)
     );
-    get(this, 'client').subscribe(get(this, 'observedChannels'));
+    this.client.subscribe(this.observedChannels);
   },
 
   addObservedChannels(newObservedChannels) {
-    const channelData = get(this, 'observedChannels');
+    const channelData = this.observedChannels;
     const updatedChannelsData = this._hasNoChannels()
       ? [...channelData, ...newObservedChannels]
       : { ...channelData, ...newObservedChannels };
@@ -99,7 +99,7 @@ export default Service.extend(Evented, {
   },
 
   removeObservedChannel(channelName) {
-    const observed = get(this, 'observedChannels');
+    const observed = this.observedChannels;
     const removeFunc = this._hasNoChannels() ? removeEvent : removeChannel;
     this._manageChannelsChange(
       observed,
@@ -108,11 +108,11 @@ export default Service.extend(Evented, {
   },
 
   updateObservedChannels(newObservedChannels) {
-    this._manageChannelsChange(get(this, 'observedChannels'), newObservedChannels);
+    this._manageChannelsChange(this.observedChannels, newObservedChannels);
   },
 
   emit(eventName, eventData) {
-    get(this, 'client').emit(eventName, eventData);
+    this.client.emit(eventName, eventData);
   },
 
   _manageChannelsChange(oldChannelsData, newChannelsData) {
@@ -122,8 +122,8 @@ export default Service.extend(Evented, {
       channelsToUnsubscribe,
     } = diffFunction(oldChannelsData, newChannelsData);
 
-    get(this, 'client').subscribe(channelsToSubscribe);
-    get(this, 'client').unsubscribeChannels(channelsToUnsubscribe);
+    this.client.subscribe(channelsToSubscribe);
+    this.client.unsubscribeChannels(channelsToUnsubscribe);
   },
 
   _handleEvent(event, data) {
@@ -145,7 +145,7 @@ export default Service.extend(Evented, {
   },
 
   _checkStructure() {
-    const observedChannels = get(this, 'observedChannels');
+    const observedChannels = this.observedChannels;
 
     if (!isArray(observedChannels)) {
       assert(
