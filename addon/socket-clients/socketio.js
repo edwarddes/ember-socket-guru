@@ -6,9 +6,9 @@ import EmberObject, {
   get
 } from '@ember/object';
 import { omit } from 'lodash';
+import io from 'socket.io-client';
 
 export default EmberObject.extend({
-  ioService: io,
   hasNoChannels: true,
   requiredConfigurationOptions: ['host','namespace'],
   // There's no concept of unsubscribing channels in socket.io
@@ -16,7 +16,7 @@ export default EmberObject.extend({
 
   setup(config, eventHandler) {
     this._checkConfig(config);
-    const socket = this.ioService(
+    const socket = io(
       get(config, 'host'),
 	  {
 		path:get(config,'namespace')+'/socket.io'
@@ -48,13 +48,6 @@ export default EmberObject.extend({
     assert(
       '[ember-sockets-guru] You need to provide namespace in the socket-guru service',
       get(config, 'namespace')!=undefined
-    );
-    assert(
-      `
-      [ember-sockets-guru] You need to make sure the socket.io client library
-      is available on the global window object
-      `,
-      !!this.ioService
     );
   },
 });

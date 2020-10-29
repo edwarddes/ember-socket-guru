@@ -5,7 +5,6 @@ module.exports = {
     const requiredBowerPackages = [
       ['pusher', 'Pusher', '3.1.0'],
       ['pusher-test-stub', 'Pusher Test Stub (required for pusher)', '1.0.0'],
-      ['socket.io-client', 'Socket.io', '^1.7.2'],
       ['action-cable', 'ActionCable', '^5.0.0'],
     ];
 
