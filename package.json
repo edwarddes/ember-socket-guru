@@ -1,6 +1,6 @@
 {
   "name": "ember-socket-guru",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Addon for easy integration of WebSockets implementation in your ember app (pusher, socket.io, phoenix channels, Action Cable)",
   "keywords": [
     "ember-addon",
