@@ -1,43 +1,26 @@
 import { assert } from '@ember/debug';
 import Service from '@ember/service';
-import { isArray } from '@ember/array';
 import { runInDebug } from '@ember/debug';
-import { getOwner } from '@ember/application';
-import { get } from '@ember/object';
-import { getProperties } from '@ember/object';
 import { set } from '@ember/object';
 import Evented from '@ember/object/evented';
 
-import socketClientLookup from 'ember-socket-guru/util/socket-client-lookup';
-import {
-  verifyArrayStructure,
-  verifyObjectStructure,
-} from 'ember-socket-guru/util/structure-checker';
-import { channelsDiff, removeChannel } from 'ember-socket-guru/util/channels-diff';
+import SocketIOClient from 'ember-socket-guru/socket-clients/socketio';
+import { verifyArrayStructure } from 'ember-socket-guru/util/structure-checker';
 import { eventsDiff, removeEvent } from 'ember-socket-guru/util/events-diff';
 
 export default Service.extend(Evented, {
-  socketClientLookup,
-
   /**
-   * Configuration for given client
+   * Configuration for the Socket.IO client
    *
-   * After the actual socketClient is resolved this object is then passed into it
-   * which allows additional configuration.
+   * This object is passed to the Socket.IO client for connection setup.
+   * Required properties: host, namespace
    * @param config
    * @type {Object}
    */
   config: null,
 
   /**
-   * Socket client name, that will be used to resolve the actual socketClient.
-   * @param socketClient
-   * @type {String}
-   */
-  socketClient: null,
-
-  /**
-   * Socket client instance resolved using name.
+   * Socket.IO client instance
    * @param client
    * @type {Object}
    */
@@ -45,18 +28,17 @@ export default Service.extend(Evented, {
 
   /**
    * Determines whether service should connect to client on startup.
-   * @param autConnect
+   * @param autoConnect
    * @type {Boolean}
    */
   autoConnect: true,
 
   /**
-   * Array containing all channels and events.
+   * Array containing all events to observe.
    *
-   * Array containing objects, where the key name is the channel name
-   * and the value a list of observed events
+   * Socket.IO uses a flat array of event names (no channel concept).
    * @param observedChannels
-   * @type {Array[Object]}
+   * @type {Array[String]}
    */
   observedChannels: null,
 
@@ -74,15 +56,18 @@ export default Service.extend(Evented, {
   },
 
   /**
-   * Deals with instrumentation of the socketClient.
+   * Sets up the Socket.IO client connection.
    *
-   * Looks up the socketClient using it's string name and calls it's `setup` method
-   * passing in the config object
+   * Creates a Socket.IO client instance, configures it with the provided
+   * config object, and subscribes to the observed events.
    */
   setup() {
-    const socketClient = this.socketClientLookup(getOwner(this), this.socketClient);
+    // Create Socket.IO client directly - fixes Embroider compatibility
+    const socketClient = SocketIOClient.create();
     set(this, 'client', socketClient);
+
     runInDebug(() => this._checkOptions());
+
     this.client.setup(
       this.config,
       this._handleEvent.bind(this)
@@ -90,37 +75,50 @@ export default Service.extend(Evented, {
     this.client.subscribe(this.observedChannels);
   },
 
+  /**
+   * Adds new events to observe
+   * @param {Array[String]} newObservedChannels - Array of event names to add
+   */
   addObservedChannels(newObservedChannels) {
-    const channelData = this.observedChannels;
-    const updatedChannelsData = this._hasNoChannels()
-      ? [...channelData, ...newObservedChannels]
-      : { ...channelData, ...newObservedChannels };
-    this._manageChannelsChange(channelData, updatedChannelsData);
+    const currentEvents = this.observedChannels;
+    const updatedEvents = [...currentEvents, ...newObservedChannels];
+    this._manageChannelsChange(currentEvents, updatedEvents);
   },
 
-  removeObservedChannel(channelName) {
+  /**
+   * Removes an observed event
+   * @param {String} eventName - Event name to remove
+   */
+  removeObservedChannel(eventName) {
     const observed = this.observedChannels;
-    const removeFunc = this._hasNoChannels() ? removeEvent : removeChannel;
     this._manageChannelsChange(
       observed,
-      removeFunc(observed, channelName)
+      removeEvent(observed, eventName)
     );
   },
 
+  /**
+   * Replaces all observed events with a new set
+   * @param {Array[String]} newObservedChannels - New array of event names
+   */
   updateObservedChannels(newObservedChannels) {
     this._manageChannelsChange(this.observedChannels, newObservedChannels);
   },
 
+  /**
+   * Emits an event to the Socket.IO server
+   * @param {String} eventName - Name of the event to emit
+   * @param {*} eventData - Data to send with the event
+   */
   emit(eventName, eventData) {
     this.client.emit(eventName, eventData);
   },
 
-  _manageChannelsChange(oldChannelsData, newChannelsData) {
-    const diffFunction = this._hasNoChannels() ? eventsDiff : channelsDiff;
+  _manageChannelsChange(oldEvents, newEvents) {
     const {
       channelsToSubscribe,
       channelsToUnsubscribe,
-    } = diffFunction(oldChannelsData, newChannelsData);
+    } = eventsDiff(oldEvents, newEvents);
 
     this.client.subscribe(channelsToSubscribe);
     this.client.unsubscribeChannels(channelsToUnsubscribe);
@@ -131,36 +129,18 @@ export default Service.extend(Evented, {
   },
 
   _checkOptions() {
-    const {
-      observedChannels,
-      socketClient,
-    } = getProperties(this, 'observedChannels', 'socketClient');
+    const observedChannels = this.observedChannels;
 
-    assert('[ember-socket-guru] You must provide observed channels/events', !!observedChannels);
+    assert('[ember-socket-guru] You must provide observed events', !!observedChannels);
     this._checkStructure();
-    assert(
-      '[ember-socket-guru] You must provide socketClient property for socket-guru service.',
-      !!socketClient
-    );
   },
 
   _checkStructure() {
     const observedChannels = this.observedChannels;
 
-    if (!isArray(observedChannels)) {
-      assert(
-        '[ember-socket-guru] observedChannels property must have correct structure.',
-        !this._hasNoChannels() && verifyObjectStructure(observedChannels)
-      );
-    } else {
-      assert(
-        '[ember-socket-guru] observedChannels must have correct structure (array of events)',
-        this._hasNoChannels() && verifyArrayStructure(observedChannels)
-      );
-    }
-  },
-
-  _hasNoChannels() {
-    return !!get(this, 'client.hasNoChannels');
+    assert(
+      '[ember-socket-guru] observedChannels must be an array of event name strings',
+      Array.isArray(observedChannels) && verifyArrayStructure(observedChannels)
+    );
   },
 });

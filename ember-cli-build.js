@@ -7,12 +7,12 @@ module.exports = function(defaults) {
     // Add options here
   });
 
-  app.import('bower_components/pusher/dist/web/pusher.js');
-  app.import('bower_components/action-cable/dist/action_cable.js');
-
-  if (app.env === 'test') {
-    app.import('bower_components/pusher-test-stub/build/bin/pusher-test-stub.js');
-  }
-
-  return app.toTree();
+  const { maybeEmbroider } = require('@embroider/test-setup');
+  return maybeEmbroider(app, {
+    skipBabel: [
+      {
+        package: 'qunit',
+      },
+    ],
+  });
 };
