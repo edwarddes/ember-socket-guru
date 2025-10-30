@@ -1,11 +1,2 @@
-<p>Due to differences in implementation across the various socket clients there are two basic types of structures for observed channels:</p>
-<h3>Channels and events</h3>
-<p>This allows specifying both which channels you want to watch and which events on those channels are interesting to you</p>
-
-{{code-snippet name="observed-channels.js"}}
-
-<p>The code above would mean that we want to receive events <code>event1</code> and <code>event2</code> triggered on the channel <code>channel1</code>.</p>
-<h3>Events only</h3>
-<p>Unfortunately some implementations do not allow for distinction for events and channels. In those cases we can only listen to events, thus the structure is a flat array:</p>
-
-{{code-snippet name="events-only.js"}}
+<p>Observed channels are configured as an array of event names to listen to.</p>
+<p>See README.md for complete documentation.</p>

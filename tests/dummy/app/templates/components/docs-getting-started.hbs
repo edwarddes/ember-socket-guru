@@ -1,27 +1,2 @@
 <h2>Setting up socket-guru service</h2>
-<p>To get started you need to create a service that will extend <code>socket-guru</code> service that comes with the addon:</p>
-{{code-snippet name="socket-guru-service.js"}}
-<p>There are few things that have to be provided in order for the addon to work properly:</p>
-<ul>
-  <li><code>socketClient</code>: string name of the socket client you want to use. See {{link-to "Socket Clients" "technology.socket-clients"}} for list of available options.</li>
-  <li><code>config</code>: this hash should contain all required configuration for the used client (for more info see {{link-to "Socket Clients" "technology.socket-clients"}} for documentation for specific clients).
-    You can also pass all client-specific configuration options here.
-  </li>
-  <li><code>observedChannels</code>: those are the channels and events that you want to listen to (see {{link-to "Observed Channels Structure" "technology.observed-channels-structure"}} for more info)</li>
-</ul>
-<h3>Usage</h3>
-<p>To actually be able to listen to events passed in from the clients, you need to extend <code>SocketEventHandler</code> mixin in your component/route/controller, for example like so:</p>
-
-{{code-snippet name="socket-event-handler.js"}}
-
-<p>In this example whenever you trigger <code>event1</code> a handler <code>catchEvent1</code> will be executed. Whenever you trigger any other action it'll execute the <code>onSocketAction</code> handler.</p>
-<h3>Catching single event:</h3>
-<p>This way you can be very specific as to which event you want to handle.</p>
-
-{{code-snippet name="catching-single-event.js"}}
-
-<p>This will only execute the handler if action <code>singleEvent</code> is triggered.</p>
-<h3>Specifying catch-all function:</h3>
-<p>If you are not sure which event you want (or you want to catch all of them) you can specify <code>onSocketAction</code> method:</p>
-
-{{code-snippet name="catch-all.js"}}
+<p>To get started you need to create a service that extends socket-guru service. See the README.md for complete documentation.</p>

@@ -1,9 +1,10 @@
-import SocketGuru from 'ember-socket-guru/services/socket-guru';
+import SocketGuruService from 'ember-socket-guru/services/socket-guru';
 
-export default SocketGuru.extend({
-  socketClient: 'socketio',
-  config: {
+export default class SocketGuru extends SocketGuruService {
+  config = {
     host: 'http://localhost:3000',
-  },
-  observedChannels: ['test-event'],
-});
+    namespace: '/'
+  };
+
+  observedChannels = ['test-event'];
+}

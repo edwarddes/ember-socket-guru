@@ -1,22 +1,4 @@
 <p>
   To install ember-socket-guru simply run following command from your terminal:
 </p>
-{{code-snippet name="installation.sh"}}
-<p>
-  After this make sure to run the generator:
-</p>
-{{code-snippet name="generator.sh"}}
-<p>
-  This will prompt you whether you want to install vendor files for <code>pusher</code>, <code>pusher-test-stub</code> and <code>socket.io</code>.
-</p>
-<div class="alert alert-warning">
-  <b>Important:</b> if you skip installation of any of the libraries make sure to exclude it in the build file!
-</div>
-<div class="alert alert-warning">
-  <b>Important:</b> if you install <code>pusher</code> then make sure to also install <code>pusher-test-stub</code> - without this your tests will fail!
-</div>
-<h3>Tree shaking</h3>
-<p>By default <code>ember-socket-guru</code> includes all vendor files. If you only want to include specific clients (e.g. only <code>pusher</code>), then you can specify it in the settings, like so:</p>
-{{code-snippet name="tree-shaking.js"}}
-<p>This will make sure that only pusher client file and needed vendor files are included.</p>
-<p>Available keys: <code>pusher</code>, <code>phoenix</code>, <code>action-cable</code>, <code>socketio</code>.</p>
+<pre><code>npm install ember-socket-guru</code></pre>

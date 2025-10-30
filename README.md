@@ -122,12 +122,12 @@ this.socket.setup();
 
 ### Listening to Events
 
-The service uses Ember's `Evented` mixin, so you can listen to events using the `on` method:
+The service uses native `EventTarget` for event handling. Listen to events using `addEventListener`:
 
 ```javascript
 // app/components/chat-room.js
 import Component from '@glimmer/component';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { action } from '@ember/object';
 
 export default class ChatRoomComponent extends Component {
@@ -135,16 +135,18 @@ export default class ChatRoomComponent extends Component {
 
   constructor() {
     super(...arguments);
-    this.socket.on('newEvent', this.handleSocketEvent);
+    this.handleSocketEvent = this.handleSocketEvent.bind(this);
+    this.socket.events.addEventListener('newEvent', this.handleSocketEvent);
   }
 
   willDestroy() {
     super.willDestroy();
-    this.socket.off('newEvent', this.handleSocketEvent);
+    this.socket.events.removeEventListener('newEvent', this.handleSocketEvent);
   }
 
   @action
-  handleSocketEvent(eventName, data) {
+  handleSocketEvent(event) {
+    const { eventName, data } = event.detail;
     console.log(`Received event: ${eventName}`, data);
 
     if (eventName === 'message') {
@@ -156,20 +158,16 @@ export default class ChatRoomComponent extends Component {
 }
 ```
 
-### Using the Socket Event Handler Mixin
+### Using the Socket Event Handler Base Class
 
-For components, you can use the `SocketEventHandler` mixin for easier event handling:
+For routes, you can extend the `SocketEventHandlerRoute` base class for easier event handling:
 
 ```javascript
-// app/components/chat-room.js
-import Component from '@ember/component';
-import SocketEventHandler from 'ember-socket-guru/mixins/socket-event-handler';
-import { inject as service } from '@ember/service';
+// app/routes/chat.js
+import SocketEventHandlerRoute from 'ember-socket-guru/bases/socket-event-handler-route';
 
-export default Component.extend(SocketEventHandler, {
-  socket: service(),
-
-  socketActions: {
+export default class ChatRoute extends SocketEventHandlerRoute {
+  socketActions = {
     message(data) {
       // Handle message event
       console.log('New message:', data);
@@ -179,9 +177,16 @@ export default Component.extend(SocketEventHandler, {
       // Handle notification event
       console.log('New notification:', data);
     }
+  };
+
+  // Or use catch-all handler
+  onSocketAction(eventName, data) {
+    console.log(`Received ${eventName}:`, data);
   }
-});
+}
 ```
+
+**Note**: The `SocketEventHandler` mixin is deprecated. Use the base class pattern instead.
 
 ### Emitting Events
 
@@ -286,10 +291,11 @@ Replaces all observed events.
 
 ### Events
 
-The service triggers a `newEvent` event when a Socket.IO event is received:
+The service dispatches a `newEvent` event via EventTarget when a Socket.IO event is received:
 
 ```javascript
-service.on('newEvent', (eventName, data) => {
+service.events.addEventListener('newEvent', (event) => {
+  const { eventName, data } = event.detail;
   // Handle event
 });
 ```
@@ -335,6 +341,39 @@ All Embroider compatibility issues from 1.x have been resolved:
 - ✅ ES6 class field initialization works correctly
 - ✅ No timing issues with structure validation
 - ✅ Full static analysis compatibility
+
+### ES6 Modernization
+
+Version 2.0 uses modern ES6 syntax throughout:
+- ✅ ES6 classes instead of `.extend()`
+- ✅ Native `EventTarget` instead of Ember's `Evented` mixin
+- ✅ Native property access instead of `get()`/`set()`
+- ✅ Base classes instead of mixins
+- ✅ `@service` decorator instead of `inject()`
+- ✅ Native `typeof` instead of Ember's `typeOf`
+
+**Event Handling Change:**
+```javascript
+// Old (1.x):
+this.socketGuru.on('newEvent', (eventName, data) => { ... });
+
+// New (2.0):
+this.socketGuru.events.addEventListener('newEvent', (event) => {
+  const { eventName, data } = event.detail;
+  ...
+});
+```
+
+**Mixin to Base Class:**
+```javascript
+// Old (1.x):
+import SocketEventHandler from 'ember-socket-guru/mixins/socket-event-handler';
+export default Route.extend(SocketEventHandler, { ... });
+
+// New (2.0):
+import SocketEventHandlerRoute from 'ember-socket-guru/bases/socket-event-handler-route';
+export default class MyRoute extends SocketEventHandlerRoute { ... }
+```
 
 ## Development
 

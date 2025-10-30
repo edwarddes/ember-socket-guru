@@ -1,14 +1,14 @@
-import Route from '@ember/routing/route';
-import SocketEventHandler from 'ember-socket-guru/mixins/socket-event-handler';
+import SocketEventHandlerRoute from 'ember-socket-guru/bases/socket-event-handler-route';
 
-export default Route.extend(SocketEventHandler, {
-  socketActions: {
+export default class MyRoute extends SocketEventHandlerRoute {
+  socketActions = {
     onEvent1(data) {
-      // catch all
+      // handle specific event
     },
-  },
+  };
 
   onSocketAction(eventName, eventData) {
-    // handle the event
-  },
-});
+    // catch-all for all events
+    console.log(`Received ${eventName}:`, eventData);
+  }
+}

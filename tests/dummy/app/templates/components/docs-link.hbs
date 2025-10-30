@@ -1,8 +1,6 @@
 <div>
   {{#if isSelected}}
-    {{svg-jar "arrow" class="links-pane__icon"}}
+    <span class="links-pane__icon">→</span>
   {{/if}}
-  {{#link-to link technology class=linkClass}}
-    {{label}}
-  {{/link-to}}
+  <span>{{@label}}</span>
 </div>

@@ -1,19 +1,10 @@
-<<<<<<< HEAD
-/* eslint-disable */
-=======
 'use strict';
->>>>>>> 54539cc... message
 
 module.exports = function(environment) {
   let ENV = {
     modulePrefix: 'dummy',
-<<<<<<< HEAD
-    environment: environment,
-    baseURL: '/',
-=======
     environment,
     rootURL: '/',
->>>>>>> 54539cc... message
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
@@ -53,12 +44,8 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-<<<<<<< HEAD
     ENV.locationType = 'hash';
     ENV.rootURL = '/ember-socket-guru/';
-=======
-    // here you can enable a production-specific feature
->>>>>>> 54539cc... message
   }
 
   return ENV;

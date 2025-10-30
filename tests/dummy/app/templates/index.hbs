@@ -1,42 +1,24 @@
 <div class="c-main-page">
   <div class="container">
-    {{#link-to 'index' class="c-main-page__logo"}}
-      {{svg-jar 'logo'}}
-    {{/link-to}}
+    <div class="c-main-page__logo">
+      <h1>ember-socket-guru</h1>
+    </div>
     <div class="c-main-page__author-framework">
       <div class="c-main-page__author-framework-item">
-        for <a href="http://emberjs.com" target="_blank">
-          {{svg-jar 'ember-logo' class="c-main-page__icon c-main-page__icon-ember"}}
+        for <a href="http://emberjs.com" target="_blank" rel="noopener noreferrer">
+          Ember.js
         </a>
       </div>
       <div class="c-main-page__author-framework-item">
-        by <a href="http://netguru.co" target="_blank">
-          {{svg-jar 'ng-logo' class="c-main-page__icon"}}
+        by <a href="http://netguru.co" target="_blank" rel="noopener noreferrer">
+          Netguru
         </a>
       </div>
     </div>
 
-    <div class="c-main-page__hero hidden-xs hidden-sm">
-      <div class="c-main-page__options">
-        <div class="c-main-page__technologies c-main-page__technologies--alternative c-main-page__technologies--adjust-down">
-          {{#each upperTechnologies as |technology|}}
-            {{technology-entry technology=technology onClick=(action "selectTechnology") selectedTechnology=selectedTechnology}}
-          {{/each}}
-        </div>
-      </div>
+    <div class="c-main-page__hero">
       <div class="c-main-page__sentence">
-        <span>Start using</span>
-        <div class="c-main-page__technologies">
-          {{technology-entry technology=selectedTechnology onClick=(action "selectTechnology") selectedTechnology=selectedTechnology}}
-        </div>
-        <span>in your ember app <b>effortlessly!</b></span>
-      </div>
-      <div class="c-main-page__options">
-        <div class="c-main-page__technologies c-main-page__technologies--alternative">
-          {{#each lowerTechnologies as |technology|}}
-            {{technology-entry technology=technology onClick=(action "selectTechnology") selectedTechnology=selectedTechnology}}
-          {{/each}}
-        </div>
+        <span>Socket.IO integration for your Ember app</span>
       </div>
     </div>
 
@@ -48,15 +30,17 @@
           <span class="c-main-page__circle"></span>
         </div>
         <div class="c-main-page__instruction-pane">
-          <span class="c-main-page__installation-text c-main-page__installation-text--green">$ ember</span>
+          <span class="c-main-page__installation-text c-main-page__installation-text--green">$ npm</span>
           <span class="c-main-page__installation-text">
             install ember-socket-guru
           </span>
         </div>
       </div>
-      <span class="c-main-page__version">Ember.js 2.0+ required</span>
-      <button class="c-main-page__button" {{action "onGetStartedClick"}}>Get started</button>
+      <span class="c-main-page__version">Ember.js 4.0+ required</span>
     </div>
   </div>
-  {{global-footer githubLink=true}}
+  <div>
+    <span>Brought to you with ♥ by</span>
+    <a href="https://netguru.co">Netguru</a>
+  </div>
 </div>

@@ -1,11 +1,10 @@
 import SocketGuruService from 'ember-socket-guru/services/socket-guru';
 
-export default SocketGuruService.extend({
-  socketClient: 'pusher',
-  config: {
-    pusherKey: 'PUSHER_KEY',
-  },
-  observedChannels: {
-    channel1: ['event1'],
-  },
-});
+export default class SocketGuru extends SocketGuruService {
+  config = {
+    host: 'http://localhost:3000',
+    namespace: '/my-namespace'
+  };
+
+  observedChannels = ['event1', 'event2'];
+}

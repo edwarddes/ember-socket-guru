@@ -1,9 +1,10 @@
-import Route from '@ember/routing/route';
+import SocketEventHandlerRoute from 'ember-socket-guru/bases/socket-event-handler-route';
 
-export default Route.extend(SocketEventHandler, {
-  socketActions: {
+export default class MyRoute extends SocketEventHandlerRoute {
+  socketActions = {
     singleEvent(data) {
-      // do something
+      // Handle this specific event
+      console.log('Single event received:', data);
     },
-  },
-});
+  };
+}

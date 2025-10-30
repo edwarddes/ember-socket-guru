@@ -1,5 +1,3 @@
-import { typeOf } from '@ember/utils';
-
 /**
  * Verifies that the events array contains only non-empty strings
  * @param {Array} eventsArray - Array of event names
@@ -7,7 +5,7 @@ import { typeOf } from '@ember/utils';
  */
 const verifyArrayStructure = (eventsArray) => {
   if (!eventsArray.length) return false;
-  return !eventsArray.some((el) => typeOf(el) !== 'string');
+  return !eventsArray.some((el) => typeof el !== 'string' || el.trim() === '');
 };
 
 export { verifyArrayStructure };
